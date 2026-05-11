@@ -1,0 +1,37 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="adas-hub py-4 py-md-5">
+    <div class="text-center mb-4 mb-md-5">
+        <h1 class="adas-hub-title">ADAS Connect</h1>
+        <p class="adas-hub-lead text-muted-soft mb-0">Main modules: <strong>Balabharathi</strong> (registrations) and <strong>CV Tracking</strong> (pipeline &amp; CVs). Use the menu above or the tiles below.</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="row">
+                <div class="col-md-6 mb-4 mb-md-0">
+                    <a asp-controller="Registrations" asp-action="Create" class="adas-tile-card text-decoration-none">
+                        <div class="adas-tile-card-inner">
+                            <div class="adas-tile-icon adas-tile-icon--bal" aria-hidden="true"></div>
+                            <h2 class="adas-tile-title">Balabharathi</h2>
+                            <p class="adas-tile-text">Student registration, parent details, and optional photo.</p>
+                            <span class="adas-tile-cta">Open registration</span>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a asp-controller="Dashboard" asp-action="Index" class="adas-tile-card text-decoration-none">
+                        <div class="adas-tile-card-inner">
+                            <div class="adas-tile-icon adas-tile-icon--cv" aria-hidden="true"></div>
+                            <h2 class="adas-tile-title">CV Tracking</h2>
+                            <p class="adas-tile-text">Pipeline dashboard, candidates, uploads, and reports. Sign in required.</p>
+                            <span class="adas-tile-cta">Go to CV Tracking</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

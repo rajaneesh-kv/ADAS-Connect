@@ -1,0 +1,39 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Dashboard</h1>
+        <div class="subtitle">CV Tracking · ADAS Connect · Pipeline overview.</div>
+    </div>
+    <a asp-controller="Candidates" asp-action="Create" class="btn btn-primary">Upload CV</a>
+</div>
+
+<div class="row stat-grid mb-gutter">
+    <div class="col-6 col-md-3">
+        <div class="stat-tile stat-tile--total">
+            <div class="label">Total</div>
+            <div class="count">@Model.Total</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-tile stat-tile--interviewed">
+            <div class="label">Interviewed</div>
+            <div class="count">@Model.Interviewed</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-tile stat-tile--shortlisted">
+            <div class="label">Shortlisted</div>
+            <div class="count">@Model.Shortlisted</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="stat-tile stat-tile--selected">
+            <div class="label">Selected</div>
+            <div class="count">@Model.Selected</div>
+        </div>
+    </div>
+</div>

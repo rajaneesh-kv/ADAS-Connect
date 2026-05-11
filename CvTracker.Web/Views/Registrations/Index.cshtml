@@ -1,0 +1,56 @@
+@model IReadOnlyList<SchoolRegistration>
+@{
+    ViewData["Title"] = "Balabharathi — All entries";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Balabharathi — All entries</h1>
+        <div class="subtitle">Registrations submitted through ADAS Connect (Balabharathi module).</div>
+    </div>
+    <div class="d-flex flex-wrap">
+        <a asp-controller="Registrations" asp-action="Create" class="btn btn-outline-primary mr-2 mb-2">Registration form</a>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary mb-2">ADAS home</a>
+    </div>
+</div>
+
+<div class="surface-card">
+    <div class="card-body p-0">
+        @if (Model == null || Model.Count == 0)
+        {
+            <p class="p-4 mb-0 text-muted-soft">No registrations yet.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Child</th>
+                            <th>Grade</th>
+                            <th>DOB</th>
+                            <th>Father mobile</th>
+                            <th>Submitted</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model)
+                        {
+                            <tr>
+                                <td>@r.ChildName</td>
+                                <td>@SchoolGradeLabels.For(r.Grade)</td>
+                                <td>@r.DateOfBirth.ToString("dd/MM/yyyy")</td>
+                                <td>@r.FatherMobile</td>
+                                <td>@r.CreatedAt.ToLocalTime().ToString("g")</td>
+                                <td class="text-right">
+                                    <a asp-action="Details" asp-route-id="@r.Id" class="btn btn-sm btn-outline-primary">View</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

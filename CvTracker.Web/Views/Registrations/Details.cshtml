@@ -1,0 +1,85 @@
+@model SchoolRegistration
+@{
+    ViewData["Title"] = "Registration — " + Model.ChildName;
+}
+
+<div class="page-header">
+    <div>
+        <h1>@Model.ChildName</h1>
+        <div class="subtitle">Balabharathi · ADAS Connect · @SchoolGradeLabels.For(Model.Grade) · DOB @Model.DateOfBirth.ToString("dd/MM/yyyy")</div>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to list</a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="surface-card mb-3">
+            <div class="card-body">
+                <h5 class="text-muted-soft mb-3">Child</h5>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8">@Model.ChildName</dd>
+                    <dt class="col-sm-4">Grade</dt>
+                    <dd class="col-sm-8">@SchoolGradeLabels.For(Model.Grade)</dd>
+                    <dt class="col-sm-4">Date of birth</dt>
+                    <dd class="col-sm-8">@Model.DateOfBirth.ToString("dd/MM/yyyy")</dd>
+                    <dt class="col-sm-4">Area</dt>
+                    <dd class="col-sm-8">@Model.AreaOfLiving</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="surface-card mb-3">
+            <div class="card-body">
+                <h5 class="text-muted-soft mb-3">Father</h5>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8">@Model.FatherName</dd>
+                    <dt class="col-sm-4">Profession</dt>
+                    <dd class="col-sm-8">@Model.FatherProfession</dd>
+                    <dt class="col-sm-4">Mobile</dt>
+                    <dd class="col-sm-8">@Model.FatherMobile</dd>
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8"><a href="mailto:@Model.FatherEmail">@Model.FatherEmail</a></dd>
+                    <dt class="col-sm-4">Landline</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.FatherLandline) ? "—" : Model.FatherLandline)</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="surface-card mb-3">
+            <div class="card-body">
+                <h5 class="text-muted-soft mb-3">Mother</h5>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Name</dt>
+                    <dd class="col-sm-8">@Model.MotherName</dd>
+                    <dt class="col-sm-4">Profession</dt>
+                    <dd class="col-sm-8">@Model.MotherProfession</dd>
+                    <dt class="col-sm-4">Mobile</dt>
+                    <dd class="col-sm-8">@Model.MotherMobile</dd>
+                    <dt class="col-sm-4">Email</dt>
+                    <dd class="col-sm-8"><a href="mailto:@Model.MotherEmail">@Model.MotherEmail</a></dd>
+                    <dt class="col-sm-4">Landline</dt>
+                    <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.MotherLandline) ? "—" : Model.MotherLandline)</dd>
+                </dl>
+            </div>
+        </div>
+
+        <p class="small text-muted-soft mb-0">Submitted @Model.CreatedAt.ToLocalTime().ToString("F")</p>
+    </div>
+    <div class="col-lg-4">
+        <div class="surface-card">
+            <div class="card-body">
+                <h5 class="text-muted-soft mb-3">Photo</h5>
+                @if (!string.IsNullOrEmpty(Model.PhotoPath))
+                {
+                    <img src="@Model.PhotoPath" alt="Child photo" class="img-fluid rounded" style="max-height: 320px; object-fit: contain;" />
+                }
+                else
+                {
+                    <p class="text-muted-soft mb-0">No photo uploaded.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>

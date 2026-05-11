@@ -1,0 +1,43 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Reports</h1>
+        <div class="subtitle">CV Tracking · Summary counts across your candidate pool.</div>
+    </div>
+    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-secondary">Back to dashboard</a>
+</div>
+
+<div class="surface-card">
+    <div class="card-body">
+        <div class="row stat-grid mb-gutter">
+            <div class="col-6 col-md-3">
+                <div class="stat-tile stat-tile--total mb-0">
+                    <div class="label">Total</div>
+                    <div class="count">@Model.Total</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-tile stat-tile--interviewed mb-0">
+                    <div class="label">Interviewed</div>
+                    <div class="count">@Model.Interviewed</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-tile stat-tile--shortlisted mb-0">
+                    <div class="label">Shortlisted</div>
+                    <div class="count">@Model.Shortlisted</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-tile stat-tile--selected mb-0">
+                    <div class="label">Selected</div>
+                    <div class="count">@Model.Selected</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

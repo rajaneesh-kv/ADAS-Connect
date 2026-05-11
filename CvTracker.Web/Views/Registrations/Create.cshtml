@@ -1,0 +1,126 @@
+@model SchoolRegistrationCreateViewModel
+@{
+    ViewData["Title"] = "Balabharathi — Registration";
+}
+
+<div class="page-header">
+    <div>
+        <h1>Balabharathi — Registration form</h1>
+        <div class="subtitle">ADAS Connect · Child details, parents, and optional photo.</div>
+    </div>
+</div>
+
+<div class="surface-card">
+    <div class="card-body">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+            <h5 class="text-muted-soft mb-3">Child</h5>
+            <div class="form-group">
+                <label asp-for="ChildName" class="form-label"></label>
+                <input asp-for="ChildName" class="form-control" autocomplete="name" />
+                <span asp-validation-for="ChildName" class="text-danger small"></span>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Grade" class="form-label"></label>
+                    <select asp-for="Grade" class="custom-select" asp-items="Html.GetEnumSelectList<SchoolGrade>()">
+                        <option value="">Choose</option>
+                    </select>
+                    <span asp-validation-for="Grade" class="text-danger small d-block"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="DateOfBirth" class="form-label"></label>
+                    <input asp-for="DateOfBirth" class="form-control" type="date" />
+                    <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Photo" class="form-label"></label>
+                <input asp-for="Photo" type="file" class="form-control-file" accept="image/jpeg,image/png,image/webp,image/gif" />
+                <small class="form-text text-muted-soft">Optional. JPG, PNG, WEBP, or GIF — max 5 MB.</small>
+                <span asp-validation-for="Photo" class="text-danger small d-block"></span>
+            </div>
+
+            <h5 class="text-muted-soft mb-3 mt-4">Father</h5>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="FatherName" class="form-label"></label>
+                    <input asp-for="FatherName" class="form-control" />
+                    <span asp-validation-for="FatherName" class="text-danger small"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="FatherProfession" class="form-label"></label>
+                    <input asp-for="FatherProfession" class="form-control" />
+                    <span asp-validation-for="FatherProfession" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label asp-for="FatherMobile" class="form-label"></label>
+                    <input asp-for="FatherMobile" class="form-control" inputmode="tel" />
+                    <span asp-validation-for="FatherMobile" class="text-danger small"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="FatherEmail" class="form-label"></label>
+                    <input asp-for="FatherEmail" class="form-control" type="email" autocomplete="email" />
+                    <span asp-validation-for="FatherEmail" class="text-danger small"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="FatherLandline" class="form-label"></label>
+                    <input asp-for="FatherLandline" class="form-control" inputmode="tel" />
+                    <span asp-validation-for="FatherLandline" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <h5 class="text-muted-soft mb-3 mt-4">Mother</h5>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="MotherName" class="form-label"></label>
+                    <input asp-for="MotherName" class="form-control" />
+                    <span asp-validation-for="MotherName" class="text-danger small"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="MotherProfession" class="form-label"></label>
+                    <input asp-for="MotherProfession" class="form-control" />
+                    <span asp-validation-for="MotherProfession" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label asp-for="MotherMobile" class="form-label"></label>
+                    <input asp-for="MotherMobile" class="form-control" inputmode="tel" />
+                    <span asp-validation-for="MotherMobile" class="text-danger small"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="MotherEmail" class="form-label"></label>
+                    <input asp-for="MotherEmail" class="form-control" type="email" autocomplete="email" />
+                    <span asp-validation-for="MotherEmail" class="text-danger small"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="MotherLandline" class="form-label"></label>
+                    <input asp-for="MotherLandline" class="form-control" inputmode="tel" />
+                    <span asp-validation-for="MotherLandline" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <h5 class="text-muted-soft mb-3 mt-4">Address</h5>
+            <div class="form-group">
+                <label asp-for="AreaOfLiving" class="form-label"></label>
+                <input asp-for="AreaOfLiving" class="form-control" />
+                <span asp-validation-for="AreaOfLiving" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex flex-wrap pt-2">
+                <button type="submit" class="btn btn-primary mr-2 mb-2">Submit registration</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

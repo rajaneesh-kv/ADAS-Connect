@@ -1,0 +1,34 @@
+@{
+    var ctrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var act = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var balRegActive = ctrl == "Registrations" && act == "Create";
+    var balEntriesActive = ctrl == "Registrations" && (act == "Index" || act == "Details");
+}
+<aside class="app-sidebar" id="adasAppSidebar" aria-label="Main navigation">
+    <div class="app-sidebar-brand">
+        <a class="app-sidebar-logo" asp-controller="Home" asp-action="Index">ADAS Connect</a>
+    </div>
+    <nav class="app-sidebar-nav">
+        <div class="app-sidebar-section-label">BB Registration</div>
+        <a class="app-sidebar-link @(balRegActive ? "is-active" : "")" asp-controller="Registrations" asp-action="Create">Balabharathi registration</a>
+        <a class="app-sidebar-link @(balEntriesActive ? "is-active" : "")" asp-controller="Registrations" asp-action="Index">Balabharathi entries</a>
+
+        <div class="app-sidebar-section-label">CV Tracking</div>
+        <a class="app-sidebar-link @(ctrl == "Dashboard" && act == "Index" ? "is-active" : "")" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+        <a class="app-sidebar-link @(ctrl == "Candidates" && act == "Index" ? "is-active" : "")" asp-controller="Candidates" asp-action="Index">Candidates</a>
+        <a class="app-sidebar-link @(ctrl == "Candidates" && act == "HistoryLookup" ? "is-active" : "")" asp-controller="Candidates" asp-action="HistoryLookup">History</a>
+        <a class="app-sidebar-link @(ctrl == "Candidates" && act == "Create" ? "is-active" : "")" asp-controller="Candidates" asp-action="Create">Upload CV</a>
+        @if (User.IsInRole("Admin"))
+        {
+            <a class="app-sidebar-link @(ctrl == "Candidates" && act == "Archived" ? "is-active" : "")" asp-controller="Candidates" asp-action="Archived">Archived</a>
+        }
+        <a class="app-sidebar-link @(ctrl == "Dashboard" && act == "Reports" ? "is-active" : "")" asp-controller="Dashboard" asp-action="Reports">Reports</a>
+    </nav>
+    <div class="app-sidebar-footer d-md-none">
+        <div class="app-sidebar-user" title="@(User.Identity?.Name ?? "")">@(User.Identity?.Name ?? "")</div>
+        <form asp-controller="Account" asp-action="Logout" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn-app-sidebar-logout">Logout</button>
+        </form>
+    </div>
+</aside>

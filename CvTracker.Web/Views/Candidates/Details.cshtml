@@ -1,0 +1,131 @@
+@model CandidateDetailsViewModel
+@{
+    ViewData["Title"] = Model.Candidate.Name;
+    string StatusBadgeClass(CandidateStatus s)
+    {
+        switch (s)
+        {
+            case CandidateStatus.NotCalled: return "badge-status--notcalled";
+            case CandidateStatus.Called: return "badge-status--called";
+            case CandidateStatus.Interviewed: return "badge-status--interviewed";
+            case CandidateStatus.Shortlisted: return "badge-status--shortlisted";
+            case CandidateStatus.Selected: return "badge-status--selected";
+            default: return "badge-status--notcalled";
+        }
+    }
+}
+
+<div class="page-header">
+    <div>
+        <h1>@Model.Candidate.Name</h1>
+        <div class="subtitle d-flex align-items-center flex-wrap">
+            <span class="mr-2">CV Tracking · Profile &amp; activity</span>
+            <span class="badge-status @StatusBadgeClass(Model.Candidate.Status)">@StatusLabels.For(Model.Candidate.Status)</span>
+        </div>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+</div>
+
+<div class="surface-card mb-3">
+    <div class="card-body">
+        <div class="section-title">Contact</div>
+        <dl class="detail-dl row mb-0">
+            <div class="col-12 col-md-6">
+                <dt>Email</dt>
+                <dd class="mb-md-3">@Model.Candidate.Email</dd>
+            </div>
+            <div class="col-12 col-md-6">
+                <dt>Phone</dt>
+                <dd class="mb-md-3">@Model.Candidate.Phone</dd>
+            </div>
+            <div class="col-12 col-md-6">
+                <dt>Interviews attended</dt>
+                <dd class="mb-0"><strong>@Model.Candidate.InterviewCount</strong> <span class="small text-muted-soft">(incremented each time status is set to Interviewed)</span></dd>
+            </div>
+            <div class="col-12 col-md-6">
+                <dt>Added</dt>
+                <dd class="mb-0">@Model.Candidate.CreatedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</dd>
+            </div>
+        </dl>
+
+        <div class="d-flex flex-wrap pt-3 border-top">
+            <a asp-action="DownloadCv" asp-route-id="@Model.Candidate.Id" class="btn btn-outline-primary mr-2 mb-2">Download CV</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <form asp-action="Delete" method="post" asp-route-id="@Model.Candidate.Id" class="mb-2" onsubmit="return confirm('Delete this candidate?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="surface-card mb-3">
+    <div class="card-body">
+        <div class="section-title">Update status</div>
+        <p class="small text-muted-soft mb-2">Choose Not called, Called, Interviewed, Shortlisted, or Selected. Each save is recorded in history.</p>
+        <form asp-action="UpdateStatus" method="post" class="form-row align-items-end">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Candidate.Id" />
+            <div class="form-group col-12 col-md-5 mb-2 mb-md-0">
+                <label class="form-label mb-1">New status</label>
+                <select name="status" class="custom-select">
+                    @foreach (CandidateStatus value in Enum.GetValues(typeof(CandidateStatus)))
+                    {
+                        if (value == Model.Candidate.Status)
+                        {
+                            <option value="@((int)value)" selected>@StatusLabels.For(value)</option>
+                        }
+                        else
+                        {
+                            <option value="@((int)value)">@StatusLabels.For(value)</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group col-12 col-md-3 mb-0">
+                <button type="submit" class="btn btn-primary btn-block">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="surface-card mb-3">
+    <div class="card-body">
+        <div class="section-title">History summary (all events)</div>
+        <div class="row">
+            @foreach (var kv in Model.HistoryCounts.OrderBy(k => k.Key))
+            {
+                <div class="col-6 col-md-4 col-lg-2 mb-2">
+                    <div class="summary-card mb-0 py-2">
+                        <div class="small text-muted-soft">@StatusLabels.For(kv.Key)</div>
+                        <div class="count">@kv.Value</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="surface-card">
+    <div class="card-body">
+        <div class="section-title">Status history (timeline)</div>
+        @if (!Model.History.Any())
+        {
+            <div class="text-muted-soft small mb-0">No history yet.</div>
+        }
+        else
+        {
+            @foreach (var item in Model.History)
+            {
+                <div class="history-item">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <span class="font-weight-bold">@StatusLabels.For(item.Status)</span>
+                        <span class="small text-muted-soft">@item.ChangedAt.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</span>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

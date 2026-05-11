@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="adas-ui-shell" content="v2-2026disk" />
+    <meta id="theme-color-meta" name="theme-color" content="#00A651" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <title>@ViewData["Title"] - ADAS Connect</title>
+    <script>
+        (function () {
+            try {
+                var k = "adas-connect-theme";
+                var legacy = "cvtracker-theme";
+                var r = document.documentElement;
+                var s = localStorage.getItem(k) || localStorage.getItem(legacy);
+                if (s === "light" || s === "dark") {
+                    r.setAttribute("data-theme", s);
+                } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                    r.setAttribute("data-theme", "dark");
+                } else {
+                    r.setAttribute("data-theme", "light");
+                }
+                var m = document.getElementById("theme-color-meta");
+                if (m) {
+                    var d = r.getAttribute("data-theme");
+                    m.setAttribute("content", d === "dark" ? "#0d3d28" : "#00A651");
+                }
+            } catch (e) {
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+@{
+    var ctrl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var act = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    var signedIn = User.Identity?.IsAuthenticated == true;
+    var navBal = ctrl == "Registrations";
+    var navCv = ctrl == "Dashboard" || ctrl == "Candidates";
+    var showCvSearch = signedIn && !navBal;
+    var showModuleSubnav = !signedIn && (navBal || navCv);
+}
+<body class="adas-app @(signedIn ? "adas-app--with-sidebar app-devops-body" : "")" data-app="adas-connect" data-shell="@(signedIn ? "sidebar" : "header-only")">
+@if (signedIn)
+{
+    <div class="app-sidebar-backdrop" id="adasSidebarBackdrop" aria-hidden="true"></div>
+    <div class="app-shell-grid adas-shell-grid">
+        <partial name="_AppSidebar" />
+        <div class="app-main-wrap-column adas-shell-column">
+            <header class="adas-header-lulu">
+                @* Row 1 — white bar: brand + account *@
+                <div class="adas-header-tier1">
+                    <div class="container-fluid adas-header-tier1-inner">
+                        <div class="adas-tier1-brand-row">
+                            <button type="button" class="app-sidebar-toggle adas-sidebar-open d-md-none" id="adasSidebarOpen" aria-expanded="false" aria-controls="adasAppSidebar" title="Open menu">
+                                <span class="app-sidebar-toggle-bar" aria-hidden="true"></span>
+                                <span class="app-sidebar-toggle-bar" aria-hidden="true"></span>
+                                <span class="app-sidebar-toggle-bar" aria-hidden="true"></span>
+                            </button>
+                            <a class="adas-brand" asp-controller="Home" asp-action="Index" title="ADAS Connect home">
+                                <span class="adas-brand-icon" aria-hidden="true"></span>
+                                <span class="adas-brand-text">ADAS Connect</span>
+                            </a>
+                        </div>
+                        <div class="adas-tier1-util">
+                            <span class="adas-user-chip d-none d-sm-inline">@(User.Identity?.Name ?? "")</span>
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn adas-btn-account btn-sm">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                @* Row 2 — mint bar: search only (module links are in the sidebar) *@
+                <div class="adas-header-tier2">
+                    <div class="container-fluid adas-header-tier2-inner">
+                        <div class="adas-tier2-search adas-tier2-search--full">
+                            @if (showCvSearch)
+                            {
+                                <form method="get" asp-controller="Candidates" asp-action="Index" class="adas-search-pill">
+                                    <input type="search" name="search" class="adas-search-pill-input" placeholder="Search for candidates, email, phone…" autocomplete="off" aria-label="Search candidates" />
+                                    <button type="submit" class="adas-search-pill-btn" title="Search" aria-label="Search">
+                                        <svg class="adas-search-pill-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            }
+                            else if (navBal)
+                            {
+                                <div class="adas-search-hint text-muted-soft small mb-0">Use <strong>Balabharathi entries</strong> in the sidebar to browse registrations.</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="adas-main app-main-inner adas-shell-main" role="main">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success alert-flash py-2 px-3 mb-3 mt-3" role="alert">@TempData["Success"]</div>
+                }
+                @RenderBody()
+            </main>
+
+            <footer class="adas-footer mt-auto">
+                <div class="container-fluid py-3 text-center small text-muted-soft">
+                    &copy; @DateTime.UtcNow.Year ADAS Connect
+                </div>
+            </footer>
+        </div>
+    </div>
+}
+else
+{
+    <header class="adas-header-lulu">
+        @* Row 1 — white bar: brand + account *@
+        <div class="adas-header-tier1">
+            <div class="container-fluid adas-header-tier1-inner">
+                <a class="adas-brand" asp-controller="Home" asp-action="Index" title="ADAS Connect home">
+                    <span class="adas-brand-icon" aria-hidden="true"></span>
+                    <span class="adas-brand-text">ADAS Connect</span>
+                </a>
+                <div class="adas-tier1-util">
+                    <span class="adas-util-item d-none d-md-inline text-muted-soft small" title="Modules below">Modules</span>
+                    <a class="btn adas-btn-account btn-sm" asp-controller="Account" asp-action="Login">Sign in</a>
+                </div>
+            </div>
+        </div>
+
+        @* Row 2 — mint bar: segmented modules + pill search *@
+        <div class="adas-header-tier2">
+            <div class="container-fluid adas-header-tier2-inner">
+                <div class="adas-tier2-left">
+                    <div class="adas-segment" role="group" aria-label="Choose module">
+                        <a class="adas-segment-btn @(navBal ? "is-active" : "")" asp-controller="Registrations" asp-action="Create">Balabharathi</a>
+                        <a class="adas-segment-btn @(navCv ? "is-active" : "")" asp-controller="Dashboard" asp-action="Index">CV Tracking</a>
+                    </div>
+                </div>
+
+                <div class="adas-tier2-search">
+                    @if (showCvSearch)
+                    {
+                        <form method="get" asp-controller="Candidates" asp-action="Index" class="adas-search-pill">
+                            <input type="search" name="search" class="adas-search-pill-input" placeholder="Search for candidates, email, phone…" autocomplete="off" aria-label="Search candidates" />
+                            <button type="submit" class="adas-search-pill-btn" title="Search" aria-label="Search">
+                                <svg class="adas-search-pill-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                </svg>
+                            </button>
+                        </form>
+                    }
+                    else if (navBal)
+                    {
+                        <div class="adas-search-hint text-muted-soft small">Use <strong>Balabharathi registration</strong> or <strong>CV Tracking</strong> above, then open entries from the menu strip.</div>
+                    }
+                    else if (!signedIn)
+                    {
+                        <div class="adas-search-hint text-muted-soft small d-none d-md-block">Sign in to search candidates (CV Tracking).</div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        @if (showModuleSubnav)
+        {
+            @if (navBal)
+            {
+                <div class="adas-subnav adas-subnav--bal" aria-label="BB Registration pages">
+                    <div class="container-fluid adas-subnav-inner">
+                        <span class="adas-subnav-heading">BB Registration</span>
+                        <a class="adas-subnav-link @(ctrl == "Registrations" && act == "Create" ? "is-active" : "")" asp-controller="Registrations" asp-action="Create">Balabharathi registration</a>
+                        <a class="adas-subnav-link @(ctrl == "Registrations" && (act == "Index" || act == "Details") ? "is-active" : "")" asp-controller="Registrations" asp-action="Index">Balabharathi entries</a>
+                    </div>
+                </div>
+            }
+            else if (navCv)
+            {
+                <div class="adas-subnav adas-subnav--cv" aria-label="CV Tracking pages">
+                    <div class="container-fluid adas-subnav-inner">
+                        <span class="adas-subnav-heading">CV Tracking</span>
+                        <a class="adas-subnav-link @(ctrl == "Dashboard" && act == "Index" ? "is-active" : "")" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                        <a class="adas-subnav-link @(ctrl == "Candidates" && act == "Index" ? "is-active" : "")" asp-controller="Candidates" asp-action="Index">Candidates</a>
+                        <a class="adas-subnav-link @(ctrl == "Candidates" && act == "HistoryLookup" ? "is-active" : "")" asp-controller="Candidates" asp-action="HistoryLookup">History</a>
+                        <a class="adas-subnav-link @(ctrl == "Candidates" && act == "Create" ? "is-active" : "")" asp-controller="Candidates" asp-action="Create">Upload CV</a>
+                        <a class="adas-subnav-link @(ctrl == "Dashboard" && act == "Reports" ? "is-active" : "")" asp-controller="Dashboard" asp-action="Reports">Reports</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="adas-subnav-link @(ctrl == "Candidates" && act == "Archived" ? "is-active" : "")" asp-controller="Candidates" asp-action="Archived">Archived</a>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </header>
+
+    <main class="adas-main container-fluid" role="main">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-flash py-2 px-3 mb-3 mt-3" role="alert">@TempData["Success"]</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="adas-footer mt-auto">
+        <div class="container-fluid py-3 text-center small text-muted-soft">
+            &copy; @DateTime.UtcNow.Year ADAS Connect
+        </div>
+    </footer>
+}
+
+    <button type="button" class="theme-fab" id="themeToggle" aria-pressed="false" title="Theme" aria-label="Toggle color theme">
+        <span class="theme-icon" aria-hidden="true">&#x263D;</span>
+        <span class="theme-toggle-text">Dark</span>
+    </button>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/theme.js" asp-append-version="true"></script>
+    @if (signedIn)
+    {
+        <script>
+            (function () {
+                var sb = document.getElementById("adasAppSidebar");
+                var bd = document.getElementById("adasSidebarBackdrop");
+                var btn = document.getElementById("adasSidebarOpen");
+                if (!sb || !bd || !btn) return;
+                function openNav() {
+                    sb.classList.add("is-open");
+                    bd.classList.add("is-visible");
+                    document.body.classList.add("app-sidebar-open");
+                    btn.setAttribute("aria-expanded", "true");
+                }
+                function closeNav() {
+                    sb.classList.remove("is-open");
+                    bd.classList.remove("is-visible");
+                    document.body.classList.remove("app-sidebar-open");
+                    btn.setAttribute("aria-expanded", "false");
+                }
+                btn.addEventListener("click", function () {
+                    if (sb.classList.contains("is-open")) closeNav(); else openNav();
+                });
+                bd.addEventListener("click", closeNav);
+                sb.querySelectorAll("a.app-sidebar-link").forEach(function (a) {
+                    a.addEventListener("click", function () {
+                        if (window.matchMedia("(max-width: 767.98px)").matches) closeNav();
+                    });
+                });
+            })();
+        </script>
+    }
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

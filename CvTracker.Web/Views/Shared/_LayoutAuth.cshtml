@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="adas-ui-shell" content="v2-2026disk-auth" />
+    <meta id="theme-color-meta" name="theme-color" content="#00A651" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <title>@ViewData["Title"] - ADAS Connect</title>
+    <script>
+        (function () {
+            try {
+                var k = "adas-connect-theme";
+                var legacy = "cvtracker-theme";
+                var r = document.documentElement;
+                var s = localStorage.getItem(k) || localStorage.getItem(legacy);
+                if (s === "light" || s === "dark") {
+                    r.setAttribute("data-theme", s);
+                } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                    r.setAttribute("data-theme", "dark");
+                } else {
+                    r.setAttribute("data-theme", "light");
+                }
+                var m = document.getElementById("theme-color-meta");
+                if (m) {
+                    var d = r.getAttribute("data-theme");
+                    m.setAttribute("content", d === "dark" ? "#0d3d28" : "#00A651");
+                }
+            } catch (e) {
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="@(ViewData["BodyClass"] as string) adas-app adas-app--auth">
+    <header class="adas-header-lulu">
+        <div class="adas-header-tier1">
+            <div class="container-fluid adas-header-tier1-inner">
+                <a class="adas-brand" asp-controller="Home" asp-action="Index" title="ADAS Connect home">
+                    <span class="adas-brand-icon" aria-hidden="true"></span>
+                    <span class="adas-brand-text">ADAS Connect</span>
+                </a>
+                <div class="adas-tier1-util">
+                    <span class="adas-util-item d-none d-md-inline text-muted-soft small">Secure sign in</span>
+                    <a class="btn adas-btn-account btn-sm" asp-controller="Home" asp-action="Index">Home</a>
+                </div>
+            </div>
+        </div>
+        <div class="adas-header-tier2 adas-header-tier2--auth">
+            <div class="container-fluid adas-header-tier2-inner justify-content-center">
+                <p class="mb-0 small text-muted-soft text-center">Sign in to access staff areas. Public registration stays open from the home page.</p>
+            </div>
+        </div>
+    </header>
+
+    <div class="container app-shell app-main-wrap pt-4 pb-5">
+        <main role="main">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-flash py-2 px-3 mb-3" role="alert">@TempData["Success"]</div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <button type="button" class="theme-fab" id="themeToggle" aria-pressed="false" title="Theme" aria-label="Toggle color theme">
+        <span class="theme-icon" aria-hidden="true">&#x263D;</span>
+        <span class="theme-toggle-text">Dark</span>
+    </button>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/theme.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
